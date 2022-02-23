@@ -4,7 +4,7 @@ from pprint import pprint
 import gurobipy
 from matplotlib import pyplot as plt
 
-from priced_matching.prm_lp import min_maximal_matching, maximum_matching
+from prm_lp import min_maximal_matching, maximum_matching
 
 EPS = 0.15
 eps = 0.1

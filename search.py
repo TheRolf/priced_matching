@@ -3,7 +3,7 @@ import random
 import gurobipy
 import networkx as nx
 
-from priced_matching.prm_lp import maximum_matching, min_maximal_matching
+from prm_lp import maximum_matching, min_maximal_matching
 
 
 def random_weights(G, p):
