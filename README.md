@@ -14,6 +14,8 @@ run `interactive.py` then draw a graph
 - calculate and plot min-max matching: `x`
 - calculate and plot maximal matching: `y`
 - print vertices and edges: `z`
+- **(NEW)** set weights for nodes (default is `0.5`): left click to selet then `w`; empty field resets weight to `0.5`
+- **(NEW)** press `ESC` for redraw board (without resetting)
 
 ## Gurobi
 
@@ -27,7 +29,7 @@ run `interactive.py` then draw a graph
 
 4. Find the line with the form `grbgetkey a1b2c3d4-a1b2-c3d4-a1b2-c3d4a1b2c3d4` and copy it to your clipboard
 
-5. Open a **new** command line / terminal, paste and hit enter
+5. Open a \*\***new**\*\* command line / terminal, paste and hit enter
 
 _To make it work under Python_
 
