@@ -3,7 +3,7 @@ from pprint import pprint
 
 import gurobipy
 from matplotlib import pyplot as plt
-
+import easygui
 from prm_lp import min_maximal_matching, maximum_matching
 
 EPS = 0.15
@@ -47,13 +47,13 @@ def keypress(event):
             reDraw()
 
     if event.key == 'x':
-        x = min_maximal_matching(edges, env=env)
-        y = maximum_matching(edges, env=env)
+        x = min_maximal_matching(edges, weight=weight, env=env)
+        y = maximum_matching(edges, weight=weight, env=env)
         reDraw(x)
         plt.text(0.5, 0.5, f"min-max matching: {len(x)} ({Fraction(len(x), len(y))} = {round(len(x)/len(y), 3)})", fontsize=12)
 
     if event.key == 'y':
-        x = maximum_matching(edges, env=env)
+        x = maximum_matching(edges, weight=weight, env=env)
         reDraw(x)
         plt.text(0.5, 0.5, f"maximal matching: {len(x)}", fontsize=12)
 
@@ -61,6 +61,29 @@ def keypress(event):
         print(len(vertices), len(edges))
         print(f"vertices = {vertices}")
         print(f"edges = {edges}")
+
+    if event.key == 'w' and i_old is not None:
+        text = easygui.enterbox("", f"Set weight for node {i_old}")
+        w = 0.5 if text == '' else float(text)
+        weight[i_old] = w
+        print(f"weight[{i_old}] := {w}")
+        i_old = None
+        edge = []
+        reDraw()
+
+    if event.key == 'd':
+        print()
+        print(f"i_old = {i_old}")
+        print(f"x_old = {x_old}")
+        print(f"y_old = {y_old}")
+        print(f"e_sel = {e_sel}")
+        print(f"edge = {edge}")
+
+    if event.key == 'escape':
+        i_old = None
+        e_sel = None
+        edge = []
+        reDraw()
 
 
 def onLine(x, y, x1, y1, x2, y2):
@@ -105,11 +128,12 @@ def addPoint(x, y):
         i = newIndex(vertices)
         print(f"add: {i}")
         vertices[i] = [x, y]
+        weight[i] = 0.5
         return i, x, y
 
 
 def reDraw(x_vec=()):
-    global vertices, edges
+    global vertices, edges, weight
     ax.cla()
     ax.set_aspect(1)
     plt.xlim([0, X])
@@ -117,12 +141,13 @@ def reDraw(x_vec=()):
     for i in vertices:
         x, y = vertices[i]
         ax.scatter(x, y, s=40, c='k', zorder=3)
+        ax.annotate(f"{i} [{weight[i]}]" if weight[i] != 0.5 else f"{i}", (x+0.05, y+0.05))
 
     for e in edges:
         i, j = e
         x1, y1 = vertices[i]
         x2, y2 = vertices[j]
-        ax.plot((x1, x2), (y1, y2), 'k', zorder=2, linewidth=4 if (i, j) in x_vec or (j, i) in x_vec else 1.5)
+        ax.plot((x1, x2), (y1, y2), 'r' if weight[i]+weight[j] > 1 else 'k', zorder=2, linewidth=4 if (i, j) in x_vec or (j, i) in x_vec else 1.5)
     plt.draw()
 
 
@@ -134,6 +159,7 @@ def reset():
 def onclick(event):
     global e_sel, i_old, x_old, y_old, edge, edges, vertices
     if event.button==1:
+        reDraw()
         x, y = round(event.xdata, 1), round(event.ydata, 1)
         e_sel = selectLine(event.xdata, event.ydata)
 
@@ -169,6 +195,11 @@ def onclick(event):
     plt.draw()
 
 
+def submit(b):
+    text = b.get(1.0, "end-1c")
+    print(text)
+
+
 vertices = {}
 edges = []
 
@@ -181,6 +212,7 @@ edges = []
 # edges = [[0, 1], [1, 2], [2, 3], [3, 0], [2, 4], [4, 5], [5, 6], [6, 2], [9, 3], [5, 12], [12, 13], [13, 14], [14, 5], [9, 15], [15, 0], [6, 16], [16, 17], [17, 18], [18, 6], [12, 19], [19, 20], [20, 21], [21, 12], [19, 22], [22, 23], [23, 20], [9, 24], [24, 25], [25, 15]]
 
 edge = []
+weight = {}
 i_old, x_old, y_old = None, None, None
 e_sel = None
 

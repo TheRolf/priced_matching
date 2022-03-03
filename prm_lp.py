@@ -2,9 +2,11 @@ import gurobipy
 from gurobipy.gurobipy import GRB
 
 
-def maximum_matching(edges, env=None):
+def maximum_matching(edges, weight=None, env=None):
 	nodes = sorted([v for e in edges for v in e])
-	edges = [tuple(sorted(edge)) for edge in sorted(edges)]
+	weight = weight if weight else {v: 0.5 for v in nodes}
+	edges = [tuple(sorted(edge)) for edge in sorted(edges) if weight[edge[0]] + weight[edge[1]] <= 1]
+
 	if env is None:
 		env = gurobipy.Env(empty=True)
 		env.setParam('LogToConsole', 0)
@@ -23,9 +25,10 @@ def maximum_matching(edges, env=None):
 	return res
 
 
-def min_maximal_matching(edges, env=None):
+def min_maximal_matching(edges, weight=None, env=None):
 	nodes = sorted([v for e in edges for v in e])
-	edges = [tuple(sorted(edge)) for edge in sorted(edges)]
+	weight = weight if weight else {v: 0.5 for v in nodes}
+	edges = [tuple(sorted(edge)) for edge in sorted(edges) if weight[edge[0]] + weight[edge[1]] <= 1]
 	if env is None:
 		env = gurobipy.Env(empty=True)
 		env.setParam('LogToConsole', 0)
