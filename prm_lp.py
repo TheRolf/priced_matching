@@ -5,7 +5,7 @@ from gurobipy.gurobipy import GRB
 def maximum_matching(edges, weight=None, env=None):
 	nodes = sorted([v for e in edges for v in e])
 	weight = weight if weight else {v: 0.5 for v in nodes}
-	edges = [tuple(sorted(edge)) for edge in sorted(edges) if weight[edge[0]] + weight[edge[1]] <= 1]
+	edges = [tuple(sorted(edge)) for edge in sorted(edges)] # if weight[edge[0]] + weight[edge[1]] <= 1]
 
 	if env is None:
 		env = gurobipy.Env(empty=True)
@@ -14,7 +14,7 @@ def maximum_matching(edges, weight=None, env=None):
 
 	model = gurobipy.Model("max_m", env=env)
 	x = model.addVars(list(edges), vtype=GRB.BINARY, name="x")
-	model.setObjective(sum(x[e] for e in edges), GRB.MAXIMIZE)
+	model.setObjective(sum(x[e]*(2-weight[e[0]]-weight[e[1]]) for e in edges), GRB.MAXIMIZE)
 	model.addConstrs(sum(x[e] for e in edges if v in e) <= 1 for v in nodes)
 	model.optimize()
 
