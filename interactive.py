@@ -22,7 +22,7 @@ def newIndex(vertices):
 
 
 def keypress(event):
-    global vertices, edge, edges, e_sel, i_old, x_old, y_old, env
+    global vertices, edge, edges, e_sel, i_sel, x_sel, y_sel, env
     if event.key == 'backspace':
         print("\nRESET\n")
         vertices, edges = {}, []
@@ -33,16 +33,16 @@ def keypress(event):
             print(f"del: {e_sel}")
             edges = [e for e in edges if e != e_sel]
             print(edges)
-            e_sel, i_old = None, None
+            e_sel, i_sel = None, None
             edge = []
             reDraw()
 
-        elif i_old is not None:
-            print(f"del: {i_old}")
-            del vertices[i_old]
-            edges = [e for e in edges if i_old not in e]
+        elif i_sel is not None:
+            print(f"del: {i_sel}")
+            del vertices[i_sel]
+            edges = [e for e in edges if i_sel not in e]
             print(edges)
-            i_old = None
+            i_sel = None
             edge = []
             reDraw()
 
@@ -62,25 +62,34 @@ def keypress(event):
         print(f"vertices = {vertices}")
         print(f"edges = {edges}")
 
-    if event.key == 'w' and i_old is not None:
-        text = easygui.enterbox("", f"Set weight for node {i_old}")
+    if event.key == 'w' and i_sel is not None:
+        text = easygui.enterbox("", f"Set weight for node {i_sel}")
         w = 0.5 if text == '' else float(text)
-        weight[i_old] = w
-        print(f"weight[{i_old}] := {w}")
-        i_old = None
+        weight[i_sel] = w
+        print(f"weight[{i_sel}] := {w}")
+        i_sel = None
         edge = []
         reDraw()
 
+    if event.key == 'w' and e_sel is not None:
+        pass
+        # w = 0.5 if text == '' else float(text)
+        # weight[i_sel] = w
+        # print(f"weight[{i_sel}] := {w}")
+        # i_sel = None
+        # edge = []
+        # reDraw()
+
     if event.key == 'd':
         print()
-        print(f"i_old = {i_old}")
-        print(f"x_old = {x_old}")
-        print(f"y_old = {y_old}")
+        print(f"i_old = {i_sel}")
+        print(f"x_old = {x_sel}")
+        print(f"y_old = {y_sel}")
         print(f"e_sel = {e_sel}")
         print(f"edge = {edge}")
 
     if event.key == 'escape':
-        i_old = None
+        i_sel = None
         e_sel = None
         edge = []
         reDraw()
@@ -152,12 +161,12 @@ def reDraw(x_vec=()):
 
 
 def reset():
-    global x_old, y_old, vertices
-    x_old, y_old = None, None
+    global x_sel, y_sel, vertices
+    x_sel, y_sel = None, None
 
 
 def onclick(event):
-    global e_sel, i_old, x_old, y_old, edge, edges, vertices
+    global e_sel, i_sel, x_sel, y_sel, edge, edges, vertices
     if event.button==1:
         reDraw()
         x, y = round(event.xdata, 1), round(event.ydata, 1)
@@ -171,25 +180,25 @@ def onclick(event):
 
         else:
             i, x, y = addPoint(x, y)
-            if i_old is not None:
+            if i_sel is not None:
                 ax.scatter(x, y, s=40, c='k', zorder=3)
-                if i != i_old:
-                    ax.scatter(x_old, y_old, s=40, c='k', zorder=3)
+                if i != i_sel:
+                    ax.scatter(x_sel, y_sel, s=40, c='k', zorder=3)
                     edge.append(i)
                     if edge not in edges and list(reversed(edge)) not in edges:
                         print(f"add: {edge}")
                         edges.append(edge)
                         reDraw()
                 edge = []
-                i_old, x_old, y_old = None, None, None
+                i_sel, x_sel, y_sel = None, None, None
             else:
                 ax.scatter(x, y, s=40, c='k', zorder=2)
                 ax.scatter(x, y, s=25, c='w', zorder=3)
                 edge.append(i)
-                i_old, x_old, y_old = i, x, y
+                i_sel, x_sel, y_sel = i, x, y
 
     if event.button==3:
-        if x_old is not None and y_old is not None:
+        if x_sel is not None and y_sel is not None:
             reset()
             reDraw()
     plt.draw()
@@ -213,7 +222,7 @@ edges = []
 
 edge = []
 weight = {}
-i_old, x_old, y_old = None, None, None
+i_sel, x_sel, y_sel = None, None, None
 e_sel = None
 
 fig, ax = plt.subplots(figsize=(12, 9))
