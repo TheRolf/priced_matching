@@ -27,7 +27,7 @@ for i in range(1,8):
         print(e)
     print(M)
 
-    #Step 1) try to find all minmax matchings in this graph (that have only two non-max-edges)
+    #Step 1) try to find all minmax matchings in this graph (that have only two non-max-ordered_edges)
 
     collect = set([])
     for e1 in G.edges.keys():

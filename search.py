@@ -18,7 +18,7 @@ def random_weights(G, p):
 def search(G, env=None):
     OPT = len(maximum_matching(G, env))
     H, w = random_weights(G, random.random())
-    # print(H.edges, end=" ")
+    # print(H.ordered_edges, end=" ")
     ALG = len(min_maximal_matching(H, env))
     return ALG/OPT
 
