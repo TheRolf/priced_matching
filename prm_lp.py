@@ -34,7 +34,7 @@ def min_maximal_matching(edges, weight=None, env=None):
 		env.setParam('LogToConsole', 0)
 		env.start()
 
-	model = gurobipy.Model("max_m", env=env)
+	model = gurobipy.Model("min_max_m", env=env)
 	x = model.addVars(list(edges), vtype=GRB.BINARY, name="x")
 
 	model.setObjective(sum(x[e] for e in edges), GRB.MINIMIZE)
